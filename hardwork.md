@@ -15,8 +15,25 @@ There were multiple steps involved that required good analytical and forensics s
 
 ## Mastering your grep, sed, awk, cut, paste skillz
 
-## Locating the hashes
+You will have a lot of files to sift through, but there will be many more to come. You are taking this challenge with the author having the assumption that you know the basic console commands to print, parse, sort, reduce, and organize with efficiency without the use of graphical GUIs.
 
+You will need to learn how to use the following commands
+
+1. `cat`, which concatenates (either prints or combines) multiple file contents together
+2. `grep` and it's variants like `egrep` or `grep -e`. In particular, know that `egrep -i` means ignore case, `egrep -irna` means search for characters recursively in your current directory, number the source file, and print binary characters. 
+3. `sed`, which stands for stream editor. A example is that you took a previous command printed to the screen by `cat` on the file, and you want to replace all the periods `.` with commas `,`, by using `cat file.txt | sed s/'.'/','/g` you replaced all of the periods printed onto the screen with a comma
+4. `awk` is useful for vertical organization. So if you `cat` a file, and then `cat file.txt | awk '{print $1}`, you print only the first column in the text file. Instead of whitespaces as the default delimiter, you can specify `awk -F 'delimiter or string' '{print $column}`. You can also cut down on empty lines by taking the previous command and then `command | awk 'NF'`, to get rid of empty lines on the screen.
+5. `cut` has limited usage, because it can only be used with a delimiter of a single character or symbol, so you can `cat` a file, and then `cut -d \: -f2`, to print the second column of the file with `:` as a delimiter.
+6. `paste`, is useful for reading files already in a vertical list, like a list of passwords to crack that needs to be accepted in a new format for your app. For example, `autorecon.py` only accepts hosts separated by a space, so you would run `python3 autorecon.py $(paste -sd, | sed s/','/'\s'/g)`
+7. The pipe operators read `<`, pipe to file `>`, and to read from stdout from a previous command `|` to run the next command on. Specify programs like netcat `nc` will have a use for the pipe operators. 
+8. Remember the POSIX terminal operators like `\s` for space, `\t` for tab, `\r` for carriage return, `\n\` for new line. 
+
+Putting all of these together, I successfully recovered the hashes by experimenting with different command combinations and operators to locate the hash. Navigate to your Umbraco folder and then type the command... __next section__
+
+## Locating the hashes
+What you are looking for is a SHA-512 hash that has already been cracked. Along the way, you'll find things like PublicTokens and other nice things that may help in completing the challenge. Since I never completed the challenge, I believed the tokens and the clues left behind on the encryption type of the Umbraco config files will help you solve it.
+
+When you locate the SHA-512 hash, it is unsalted and is already cracked on crackstation.net
 ## Monkeying around with QR-codes and barcodes in a PDF
 
 ## Automating the scanning of QR-codes
