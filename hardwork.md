@@ -11,13 +11,19 @@ There were multiple steps involved that required good analytical and forensics s
 
 ## Two innocous files
 
+
+
 ## Unzipping the codebase
+
+Trying to unzip the "zip" file, you'll find out that it throws a error message. The reason why, is that the compressed archive is in 7z format, so `7z x file.zip` to extract it.
+
+Now take a deep breath, the next one is going to be long.
 
 ## Mastering your grep, sed, awk, cut, paste skillz
 
 You will have a lot of files to sift through, but there will be many more to come. You are taking this challenge with the author having the assumption that you know the basic console commands to print, parse, sort, reduce, and organize with efficiency without the use of graphical GUIs.
 
-You will need to learn how to use the following commands
+You will need to learn how to use the following commands, as this exercise is basically a log-analysis task on steroids.
 
 1. `cat`, which concatenates (either prints or combines) multiple file contents together
 2. `grep` and it's variants like `egrep` or `grep -e`. In particular, know that `egrep -i` means ignore case, `egrep -irna` means search for characters recursively in your current directory, number the source file, and print binary characters. 
@@ -26,7 +32,7 @@ You will need to learn how to use the following commands
 5. `cut` has limited usage, because it can only be used with a delimiter of a single character or symbol, so you can `cat` a file, and then `cut -d \: -f2`, to print the second column of the file with `:` as a delimiter.
 6. `paste`, is useful for reading files already in a vertical list, like a list of passwords to crack that needs to be accepted in a new format for your app. For example, `autorecon.py` only accepts hosts separated by a space, so you would run `python3 autorecon.py $(paste -sd, targets.txt | sed s/','/'\s'/g)`
 7. The pipe operators read `<`, pipe to file `>`, and to read from stdout from a previous command `|` to run the next command on. Specify programs like netcat `nc` will have a use for the pipe operators. 
-8. Remember the POSIX terminal operators like `\s` for space, `\t` for tab, `\r` for carriage return, `\n\` for new line. If I learned that credentials start with a capital `KEY=`, then I can `egrep -irna KEY` then separate them using stream editor to create unique lines on the screen like `egrep -irna key | sed s/'KEY='/'\r\nKEY='/g` to make them more distinctive to see.
+8. Remember the POSIX terminal operators like `\s` for space, `\t` for tab, `\r` for carriage return, `\n\` for new line. If I learned that credentials start with a capital `KEY=`, then I can `egrep -irna KEY` then separate them using stream editor to create unique lines on the screen like `egrep -irna key | sed s/'KEY='/'\r\nKEY='/g` to make them more distinctive to see, by separating each line that starts with `KEY=` on a brand new line.
 9. Remember the `command 2>&1` trick, if you are running some shoddy program that prints to stderr instead of stdout normally (like airodump-ng). By doing that, you can run `airodump-ng wlan0mon 2>&1 | tee logfile.txt` to write everything you see on the screen to a logfile at the same time. Basically, it took stderr and redirected it to stdout along with what was supposed to be printed on stdout (your screen).
 
 Putting all of these together, I successfully recovered the hashes by experimenting with different command combinations and operators to locate the hash. Navigate to your Umbraco folder and then type the command... __next section__
@@ -36,6 +42,10 @@ What you are looking for is a SHA-512 hash that has already been cracked. Along 
 
 When you locate the SHA-512 hash, it is unsalted and is already cracked on crackstation.net
 ## Monkeying around with QR-codes and barcodes in a PDF
+
+Don't get too excited when you finally unlock the lengthy password for the PDF file. You will not be amused.
+
+There is over 1,400 pages, all containing all kinds of gibberish, QR-codes that reveal insults against you and discourage you from scanning them manually. However, by combining several tools together, you can extract each image and barcode as a PNG file, and then have another application scan through them to decode them for clues.
 
 ## Automating the scanning of QR-codes
 
