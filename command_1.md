@@ -20,3 +20,8 @@ According to the decompiled code, which in almost all major cases will be in C, 
 <li>/bin/shutdown</li>
 <li>init 0</li>
 </ol>
+
+If there is anything else you entered as a command, the app will rudely mock you and log you out.
+
+That is why it is important to statically analyze a binary before messing with it, either in a CTF or real-time scenario. Instead of just blindly netcatting to the server and getting frustrated.
+
