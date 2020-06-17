@@ -1,5 +1,12 @@
 
-# Command_1 Challenge
+
+# ctf.zh3r0.ml Command_1 Challenge
+
+<code>
+Chang Tan
+AWS Certified Cloud Practitioner and Solutions Architect Associate
+ctanlister@gmail.com
+</code>
 
 This was actually the easiest of the pwn/binary exploitation boxes. All it took was a 10 minute video on how to use GHIDRA or, if you prefer, IDA Pro to understand everything.
 
