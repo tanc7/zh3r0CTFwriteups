@@ -64,7 +64,7 @@ Now make a symbolic link so you can just run __`ghidra`__ on the command line to
 
 __I strongly advise watching this short eleven-and-a-half minute video of how to run GHIDRA and perform a simple exploit by viewing the decompilation of functions in a binary.__
 
-`https://www.youtube.com/watch?v=fTGTnrgjuGA`
+https://www.youtube.com/watch?v=fTGTnrgjuGA
 
 When you are done. Run `ghidra` on the command line
 
@@ -79,7 +79,7 @@ main() directly calls here(), and here() merely accepts your buffer to overflow.
 
 ![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_ghidra_winwin_func.png)
 
-In other words, the objective is to overflow the RBP (Return Base Pointer), with that address for winwin() AKA 0x400707, to make the exploited app run the command `cat flag.txt`, thereby printing your flag.
+In other words, the objective is to overflow where the RSP (Return Stack Pointer), is pointing AT, to make the exploited app run the command `cat flag.txt`, thereby printing your flag.
 
 ![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_ghidra_memloc_syscall_winwin.png)
 
@@ -127,6 +127,7 @@ Before we craft a exploit, we need to eliminate bad characters.
 
 __Note: The legitimate flag grabbing exploit works fine with a buffer of capital A's. But Eliminating bad characters is important for the reverse shell section of the write-up__
 
+Now I am still going through this step of the exploit development process, because in the real world, bad characters make or break your successful exploitation. Bad characters are basically **`hexdecimal assembly opcodes that do not render properly in memory, causing unpredictable execution, segfaults, and crashes, and ultimately, a failed or unreliable exploit`**
 
 ### 4. Building a Exploit
 ### 5. Successful Exploitation (local)
