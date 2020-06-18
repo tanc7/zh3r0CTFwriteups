@@ -37,3 +37,35 @@ Additional fuzzing and dumping of register virtual address spaces revealed that 
 Within Evan's Debugger (edb-debugger), I located the memory address to properly overwrite the base pointer.
 
 ![](https://zherowriteups.s3.amazonaws.com/1_freeflag_winwin.png)
+
+## Let's take a big step back and go through the basics of fuzzing, stack based buffer overflows, and pointer overwrites
+
+We're going to break it down to the following steps...
+
+1. Static Analysis, Fuzzing & Crash Analysis
+2. Assessing Exploit Opportunities
+3. Eliminating Bad Characters
+4. Building a Exploit
+5. Successful Exploitation
+
+### 1. Static Analysis, Fuzzing & Crash Analysis
+
+In a CTF like environment, it's a good idea to gain as much intel as you can about your intended target application. And that means, obtaining a copy of the binary for static analysis so that we can focus on what prints our flag or pops a shell instead of mindlessly throwing strings until the app blows up with errors to sift through.
+
+Know at least what we are attacking.
+
+Today, we are using GHIDRA, the NSA's infamous open-sourced competitor to IDA-Pro. You may download it at ghidra-sre.org
+
+First unzip GHIDRA into your installation directory of choice, for me, I am running it on my persistent bootable Kali Linux USB Drive because my KVM Kali VM has been screwing up lately.
+
+__```sudo unzip ghidra_9.1.2_PUBLIC_20200212.zip -d /run/live/persistence/sdc3/```__
+
+Now make a symbolic link so you can just run __`ghidra`__ on the command line to run it. First navigate to `/run/live/persistence/sdc3/ghidra_9.1.2_PUBLIC` and then type __`sudo ln -s $PWD/ghidraRun /usr/local/bin/ghidra`__
+
+
+
+
+### 2. Assessing Exploit Opportunities
+### 3. Eliminating Bad Characters
+### 4. Building a Exploit
+### 5. Successful Exploitation
