@@ -127,7 +127,15 @@ Before we craft a exploit, we need to eliminate bad characters.
 
 __Note: The legitimate flag grabbing exploit works fine with a buffer of capital A's. But Eliminating bad characters is important for the reverse shell section of the write-up__
 
-Now I am still going through this step of the exploit development process, because in the real world, bad characters make or break your successful exploitation. Bad characters are basically **`hexdecimal assembly opcodes that do not render properly in memory, causing unpredictable execution, segfaults, and crashes, and ultimately, a failed or unreliable exploit`**
+Now I am still going through this step of the exploit development process, because in the real world, bad characters make or break your successful exploitation. We are talking about actually "pwning" someone's computer with a zero-day vulnerability, not just about printing flags in capture-the-flag scenarios.
+
+Bad characters are basically **`hexdecimal assembly opcodes that do not render properly in memory, causing unpredictable execution, segfaults, and crashes, and ultimately, a failed or unreliable exploit`**
+
+Assembly is the lowest-level language before raw binary, which is machine language. It is the only lower level language that is still comprehensible to humans. Attackers often write custom shellcode in Assembly, and it's much harder to learn than higher level languages like C, C++ (which are also considered low-level languages). 
+
+From hexidecimal characters 0x00 to 0xff, each byte represents some sort of CPU instruction to a specific architecture. And badly mangling your "shellcode" with bad characters that do not perform as intended will cause your exploit attempt to fail or become unstable.
+
+Therefore it is a priority to identify and eliminate bad characters by brute-forcing the buffer with all hexidecimal characters from 0x00 to 0xff to get rid of them before it becomes a problem.
 
 ### 4. Building a Exploit
 ### 5. Successful Exploitation (local)
