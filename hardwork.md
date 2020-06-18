@@ -66,20 +66,31 @@ What you are looking for is a SHA-512 hash that has already been cracked. Along 
 
 ![](https://zherowriteups.s3.amazonaws.com/IMG_20200617_015624881.jpg)
 
-Finally through a insanely command combining what I have taught you in the previous section, you will be able to come across the SHA-512 hash.
+Finally through a insanely long command combining what I have taught you in the previous section, you will be able to come across the SHA-512 hash.
 
 ![](https://zherowriteups.s3.amazonaws.com/2_hardwork_found_SHA512_hash.png)
 
 When you locate the SHA-512 hash, it is unsalted and is already cracked on crackstation.net
 
+The hash has no salt and it will instantly show up as cracked as the password __`one-piece-anime-theme-park-attraction-to-open-in-march`__
+
+![](https://cdn.discordapp.com/attachments/722013474514927640/722736907997413407/JPEG_20200617_015820.jpg)
+
+
 
 ## Monkeying around with QR-codes and barcodes in a PDF
 
-Don't get too excited when you finally unlock the lengthy password for the PDF file. You will not be amused.
+Don't get too excited when you finally unlock the lengthy password for the PDF file. You will not be amused. Running `pdfgrep` with the password argument will give you a fake flag.
+
+![](https://cdn.discordapp.com/attachments/722013474514927640/722746593287077998/JPEG_20200617_023644.jpg)
 
 There is over 1,400 pages, all containing all kinds of gibberish, QR-codes that reveal insults against you and discourage you from scanning them manually. 
 
+![](https://cdn.discordapp.com/attachments/722013474514927640/722737113505857536/JPEG_20200617_015910.jpg)
+
 ![](https://zherowriteups.s3.amazonaws.com/2_hardwork_barcodes.png)
+
+![](https://cdn.discordapp.com/attachments/722013474514927640/722737888277561354/Screenshot_20200617-020202.png)
 
 Entropy analysis of the unlocked PDF file from the `binwalk -E file.pdf` command shows a extreme amount of entropy (randomness) at approximately the first 80% of the file. It briefly goes down in entropy (more alike) before spiking up in entropy again and then plummeting to 0.4 entropy score at the end, meaning that the last 10% of the PDF file are mostly similar
 
@@ -95,6 +106,12 @@ However, by combining several tools together, you can extract each image and bar
 
 There is a automatic way to parse the barcodes and QR-codes out of the unlocked PDF file, although it took me a hour of Googling and trying different options before I figured out what worked for me.
 
+1. First I had to install apt-file in order to search for a package that contained my needed app
+2. The app is called `pdftocairo` and it will parse out the pages of the 1,400+ page encrypted PDF file and extract them as images in the PNG format
+3. Then I used `` which can scan the PNG files for barcodes and QR-codes.
+
+
+
 ## More rabbit holes
 
 Auto-parsing the PNG files by the thousands (there is actually 1,410 of them), you will find a message written in hex format.
@@ -104,6 +121,8 @@ Auto-parsing the PNG files by the thousands (there is actually 1,410 of them), y
 Using a online hexidecimal to ASCII converter, you'll get a URL to the hosts of the CTF and their background information, as well as a encouraging mantra to try harder
 
 ![](https://zherowriteups.s3.amazonaws.com/2_hardwork_foundurl.png)
+
+https://medium.com/zh3r0/our-team-4887066f8f6d
 
 ## Possible clue
 
