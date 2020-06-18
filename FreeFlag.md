@@ -162,9 +162,13 @@ f.close
 ```
 To test this, I used the `echo '{youdidit}' > flag.txt` command in the same directory as the binary that was given to me. As you can see, if you generate the payload and then `gdb freeflag` and then `run < payload.txt`, which spawns a process that runs the `cat flag.txt` command to print the flag.
 
+![](successful_exploit)
+
 ### 6. Unsuccessful Exploitation (Remote)
 
 Unfortunately, online exploitation was not a success. I was told on the ctf.zh3r0.ml Discord channel that the issue is the discrepancies between different versions of libc and that the stack must be realigned for successful exploitation.
+
+![](unsuccessful_exploitation)
 
 If you can do it, the CTFd servers are still online as of this day. Here is the code, although the server returns 'None' as in no response. As I do not know of what version of libc they are using, all I know is that it is some sort of Docker container that may have C Socket listeners pre-compiled.
 
