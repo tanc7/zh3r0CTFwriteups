@@ -49,15 +49,15 @@ You will have a lot of files to sift through, but there will be many more to com
 
 You will need to learn how to use the following commands, as this exercise is basically a log-analysis task on steroids.
 
-1. `cat`, which concatenates (either prints or combines) multiple file contents together
-2. `grep` and it's variants like `egrep` or `grep -e`. In particular, know that `egrep -i` means ignore case, `egrep -irna` means search for characters recursively in your current directory, number the source file, and print binary characters. 
-3. `sed`, which stands for stream editor. A example is that you took a previous command printed to the screen by `cat` on the file, and you want to replace all the periods `.` with commas `,`, by using `cat file.txt | sed s/'.'/','/g` you replaced all of the periods printed onto the screen with a comma
-4. `awk` is useful for vertical organization. So if you `cat` a file, and then `cat file.txt | awk '{print $1}`, you print only the first column in the text file. Instead of whitespaces as the default delimiter, you can specify `awk -F 'delimiter or string' '{print $column}`. You can also cut down on empty lines by taking the previous command and then `command | awk 'NF'`, to get rid of empty lines on the screen.
-5. `cut` has limited usage, because it can only be used with a delimiter of a single character or symbol, so you can `cat` a file, and then `cut -d \: -f2`, to print the second column of the file with `:` as a delimiter.
-6. `paste`, is useful for reading files already in a vertical list, like a list of passwords to crack that needs to be accepted in a new format for your app. For example, `autorecon.py` only accepts hosts separated by a space, so you would run `python3 autorecon.py $(paste -sd, targets.txt | sed s/','/'\s'/g)`
-7. The pipe operators read `<`, pipe to file `>`, and to read from stdout from a previous command `|` to run the next command on. Specify programs like netcat `nc` will have a use for the pipe operators. 
-8. Remember the POSIX terminal operators like `\s` for space, `\t` for tab, `\r` for carriage return, `\n\` for new line. If I learned that credentials start with a capital `KEY=`, then I can `egrep -irna KEY` then separate them using stream editor to create unique lines on the screen like `egrep -irna key | sed s/'KEY='/'\r\nKEY='/g` to make them more distinctive to see, by separating each line that starts with `KEY=` on a brand new line.
-9. Remember the `command 2>&1` trick, if you are running some shoddy program that prints to stderr instead of stdout normally (like airodump-ng). By doing that, you can run `airodump-ng wlan0mon 2>&1 | tee logfile.txt` to write everything you see on the screen to a logfile at the same time. Basically, it took stderr and redirected it to stdout along with what was supposed to be printed on stdout (your screen).
+1. __`cat`__, which concatenates (either prints or combines) multiple file contents together
+2. __`grep`__ and it's variants like `egrep` or `grep -e`. In particular, know that `egrep -i` means ignore case, `egrep -irna` means search for characters recursively in your current directory, number the source file, and print binary characters. 
+3. __`sed`__, which stands for stream editor. A example is that you took a previous command printed to the screen by `cat` on the file, and you want to replace all the periods `.` with commas `,`, by using `cat file.txt | sed s/'.'/','/g` you replaced all of the periods printed onto the screen with a comma
+4. __`awk`__ is useful for vertical organization. So if you `cat` a file, and then `cat file.txt | awk '{print $1}`, you print only the first column in the text file. Instead of whitespaces as the default delimiter, you can specify `awk -F 'delimiter or string' '{print $column}`. You can also cut down on empty lines by taking the previous command and then `command | awk 'NF'`, to get rid of empty lines on the screen.
+5. __`cut`__ has limited usage, because it can only be used with a delimiter of a single character or symbol, so you can `cat` a file, and then `cut -d \: -f2`, to print the second column of the file with `:` as a delimiter.
+6. __`paste`__, is useful for reading files already in a vertical list, like a list of passwords to crack that needs to be accepted in a new format for your app. For example, `autorecon.py` only accepts hosts separated by a space, so you would run `python3 autorecon.py $(paste -sd, targets.txt | sed s/','/'\s'/g)`
+7. The pipe operators read __`<`__, pipe to file __`>`__, and to read from stdout from a previous command __`|`__ to run the next command on. Specify programs like netcat __`nc`__ will have a use for the pipe operators. 
+8. Remember the POSIX terminal operators like __`\s`__ for space, __`\t`__ for tab, __`\r`__ for carriage return, __`\n\`__ for new line. If I learned that credentials start with a capital `KEY=`, then I can `egrep -irna KEY` then separate them using stream editor to create unique lines on the screen like __`egrep -irna key | sed s/'KEY='/'\r\nKEY='/g`__ to make them more distinctive to see, by separating each line that starts with `KEY=` on a brand new line.
+9. Remember the __`command 2>&1`__ trick, if you are running some shoddy program that prints to stderr instead of stdout normally (like airodump-ng). By doing that, you can run __`airodump-ng wlan0mon 2>&1 | tee logfile.txt`__ to write everything you see on the screen to a logfile at the same time. Basically, it took stderr and redirected it to stdout along with what was supposed to be printed on stdout (your screen).
 
 Putting all of these together, I successfully recovered the hashes by experimenting with different command combinations and operators to locate the hash. Navigate to your Umbraco folder and then type the command... __next section__
 
@@ -93,6 +93,8 @@ There is over 1,400 pages, all containing all kinds of gibberish, QR-codes that 
 ![](https://cdn.discordapp.com/attachments/722013474514927640/722737888277561354/Screenshot_20200617-020202.png)
 
 Entropy analysis of the unlocked PDF file from the `binwalk -E file.pdf` command shows a extreme amount of entropy (randomness) at approximately the first 80% of the file. It briefly goes down in entropy (more alike) before spiking up in entropy again and then plummeting to 0.4 entropy score at the end, meaning that the last 10% of the PDF file are mostly similar
+
+![](https://cdn.discordapp.com/attachments/722013474514927640/722738838727819314/IMG_20200617_020525359.jpg)
 
 ![](https://zherowriteups.s3.amazonaws.com/IMG_20200617_015624881.jpg)
 
