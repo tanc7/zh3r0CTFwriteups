@@ -64,8 +64,6 @@ Putting all of these together, I successfully recovered the hashes by experiment
 ## Locating the hashes
 What you are looking for is a SHA-512 hash that has already been cracked. Along the way, you'll find things like PublicTokens and other nice things that may help in completing the challenge. Since I never completed the challenge, I believed the tokens and the clues left behind on the encryption type of the Umbraco config files will help you solve it.
 
-![](https://zherowriteups.s3.amazonaws.com/IMG_20200617_015624881.jpg)
-
 Finally through a insanely long command combining what I have taught you in the previous section, you will be able to come across the SHA-512 hash.
 
 ![](https://zherowriteups.s3.amazonaws.com/2_hardwork_found_SHA512_hash.png)
@@ -95,8 +93,6 @@ There is over 1,400 pages, all containing all kinds of gibberish, QR-codes that 
 Entropy analysis of the unlocked PDF file from the `binwalk -E file.pdf` command shows a extreme amount of entropy (randomness) at approximately the first 80% of the file. It briefly goes down in entropy (more alike) before spiking up in entropy again and then plummeting to 0.4 entropy score at the end, meaning that the last 10% of the PDF file are mostly similar
 
 ![](https://cdn.discordapp.com/attachments/722013474514927640/722738838727819314/IMG_20200617_020525359.jpg)
-
-![](https://zherowriteups.s3.amazonaws.com/IMG_20200617_015624881.jpg)
 
 
 However, by combining several tools together, you can extract each image and barcode as a PNG file, and then have another application scan through them to decode them for clues.
