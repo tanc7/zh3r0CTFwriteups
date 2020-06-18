@@ -26,7 +26,7 @@ However I had control of the other registers, and managed to overwrite the Retur
 
 ![](https://zherowriteups.s3.amazonaws.com/1_freeflag_overwrote_rbp_with_rsp.png)
 
-Instead of overwriting the RBP register with what I was supposed to do (later in this write-up), I ended up overwriting the Return Base Pointer with the address of the the Return Stack Pointer, which points to the current position at the top of the executable stack. Thereby, throwing the application into a infinite loop.
+Instead of altering the where the Return Stack Pointer (RSP) is pointing at with what I was supposed to do (later in this write-up), I ended up overwriting the Return Base Pointer with the address of the the Return Stack Pointer, which points to the current position at the top of the executable stack. Thereby, throwing the application into a infinite loop.
 
 ![](https://zherowriteups.s3.amazonaws.com/Screenshot+from+2020-06-17+17-57-30.png)
 
