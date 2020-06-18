@@ -62,10 +62,15 @@ __```sudo unzip ghidra_9.1.2_PUBLIC_20200212.zip -d /run/live/persistence/sdc3/`
 
 Now make a symbolic link so you can just run __`ghidra`__ on the command line to run it. First navigate to `/run/live/persistence/sdc3/ghidra_9.1.2_PUBLIC` and then type __`sudo ln -s $PWD/ghidraRun /usr/local/bin/ghidra`__
 
+__I strongly advise watching this short eleven-and-a-half minute video of how to run GHIDRA and perform a simple exploit by viewing the decompilation of functions in a binary.__
 
+`https://www.youtube.com/watch?v=fTGTnrgjuGA`
 
+When you are done. Run `ghidra` on the command line
 
 ### 2. Assessing Exploit Opportunities
 ### 3. Eliminating Bad Characters
 ### 4. Building a Exploit
 ### 5. Successful Exploitation
+
+# Bonus: My big mistake. Accidentally creating a reverse shell instead without controlling the instruction pointer.
