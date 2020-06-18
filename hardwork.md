@@ -11,11 +11,35 @@ There were multiple steps involved that required good analytical and forensics s
 
 ## Two innocous files
 
+First you are going to start off with `unzip OpenThis.zip` and you will get two files
 
+1. A PNG image (supposedly) called ArrayOfCharsThis.jpg
+2. A "zip" file called ThisIsAZipFile.zip (it is not)
+
+Attempting to unzip it will give you this
+
+```
+(base) ctlister@System76:/1tbdisk/zh3r0ctf/hardwork$ unzip ThisIsAZipFile.zip
+Archive:  ThisIsAZipFile.zip
+   skipping: ThisIsAPDFfile.pdf      need PK compat. v5.1 (can do v4.6)
+   skipping: umbraco.zip             need PK compat. v5.1 (can do v4.6)
+(base) ctlister@System76:/1tbdisk/zh3r0ctf/hardwork$
+```
 
 ## Unzipping the codebase
 
+If you are confused, a quick Google search will yield the result that this is actually a 7zip file. Install p7zip on your Linux box and type `7z x ThisIsAZipFile.zip`
+
+You will be prompted for a password that you do not have. So reinvestigate the PNG image and notice that there is embedded text at the bottom of the file. Reveal it by `strings ArrayOfCharsThis.jpg` and it will reveal the password __`animeandmangarules`__
+
+Unzip the file with the command `7z x -panimeandmangarules ThisIsAZipFile.zip`
+
 Trying to unzip the "zip" file, you'll find out that it throws a error message. The reason why, is that the compressed archive is in 7z format, so `7z x file.zip` to extract it.
+
+You now have two more files
+
+1. A password protected PDF file that you do not know the creds for yet
+2. Another zipfile called Umbraco, unzip it into it's own directory
 
 Now take a deep breath, the next one is going to be long.
 
@@ -45,9 +69,15 @@ When you locate the SHA-512 hash, it is unsalted and is already cracked on crack
 
 Don't get too excited when you finally unlock the lengthy password for the PDF file. You will not be amused.
 
-There is over 1,400 pages, all containing all kinds of gibberish, QR-codes that reveal insults against you and discourage you from scanning them manually. However, by combining several tools together, you can extract each image and barcode as a PNG file, and then have another application scan through them to decode them for clues.
+There is over 1,400 pages, all containing all kinds of gibberish, QR-codes that reveal insults against you and discourage you from scanning them manually. 
+
+![](https://zherowriteups.s3.amazonaws.com/2_hardwork_automated_taunts.png)
+
+However, by combining several tools together, you can extract each image and barcode as a PNG file, and then have another application scan through them to decode them for clues.
 
 ## Automating the scanning of QR-codes
+
+There is a automatic way to parse the barcodes and QR-codes out of the unlocked PDF file, although it took me a hour of Googling and trying different options before I figured out what worked for me.
 
 ## More rabbit holes
 
