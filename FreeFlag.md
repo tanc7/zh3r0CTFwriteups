@@ -24,6 +24,16 @@ After a half hour of fiddling with it, I realized that I cannot overwrite the Re
 
 However I had control of the other registers, and managed to overwrite the Return Base Pointer. That gave me a idea.
 
+![](https://zherowriteups.s3.amazonaws.com/1_freeflag_overwrote_rbp_with_rsp.png)
+
 Instead of overwriting the RBP register with what I was supposed to do (later in this write-up), I ended up overwriting the Return Base Pointer with the address of the the Return Stack Pointer, which points to the current position at the top of the executable stack. Thereby, throwing the application into a infinite loop.
 
+![](https://zherowriteups.s3.amazonaws.com/Screenshot+from+2020-06-17+17-57-30.png)
+
 Additional fuzzing and dumping of register virtual address spaces revealed that I had a 32-byte buffer to play with, to drop a reverse netcat payload. 
+
+## Ultimately, I behaved. And located the address I was supposed to call in my return instruction
+
+Within Evan's Debugger (edb-debugger), I located the memory address to properly overwrite the base pointer.
+
+![](https://zherowriteups.s3.amazonaws.com/1_freeflag_winwin.png)
