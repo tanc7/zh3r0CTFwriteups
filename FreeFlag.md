@@ -68,7 +68,55 @@ __I strongly advise watching this short eleven-and-a-half minute video of how to
 
 When you are done. Run `ghidra` on the command line
 
+![](ghidrasplash)
+
+Playing around with GHIDRA, you might notice three functions.
+1. main()
+2. here()
+3. winwin()
+
+main() directly calls here(), and here() merely accepts your buffer to overflow. Winwin() however cannot be called, but what is interesting is if you search for the function in GHIDRA, the address is 0x400707.
+
+![](winwin_function)
+
+In other words, the objective is to overflow the RBP (Return Base Pointer), with that address for winwin() AKA 0x400707, to make the exploited app run the command `cat flag.txt`, thereby printing your flag.
+
+Install gdb-PEDA if you have not already.
+
+First let's create a payload to see if we can crash the program. `python -c 'print "A"*100' > payload.txt`
+Now have gdb run a debugger session, first make the app executable, `chmod 700 freeflag`, and then run gdb with the peda plugin installed, `gdb freeflag`
+
+In the prompt, crash the program with 100 letter A's, `run < payload.txt`, and let's analyze the crash.
+
+![](firstcrash)
+
+As you can see, there are a few interesting things going on here. Note that the Return Instruction Pointer remains unharmed and not overwritten. This is bad news. But also note that we completely overwrote the Return Base Pointer with eight capital A's. That is promising, because the base pointer controls when the program returns back to the Return Stack Pointer when execution hits it.
+
+Also, please count the length of the buffer that landed between the registers. As you'll find out later, the buffer of A's began in the RSI register, but it is NOT 100 bytes long. Each row is 16 bytes, with the fourth row being occupied by eight bytes of A's. So 3x16+8 = 56 bytes.
+
+Take note of this. We only have 56 bytes to play with.
+
 ### 2. Assessing Exploit Opportunities
+
+Now let's create a pattern to map the exact point where RBP is about to be overwritten.
+
+```
+gdb freeflag
+pattern create 100
+```
+
+Then copy and paste the pattern after typing `run`, right into the console and watch the crash.
+
+![](secondcrash)
+
+In gdb-PEDA, you can specifically search for the offset, that is the distance from a desired section of the buffer and the amount of "junk" letter A's needed to reach it, by specifically typing `pattern search $register`. However, a more convenient way is to dump all the offsets that we need, just run __`pattern search`__ and copy and paste the output into a file called exploit.py
+
+![](Register offsets)
+
+As you can see from the register offsets, it takes a buffer of 32 A's to reach the RBP register. By which point, the following eight bytes of our cherry-picked winwin() memory address will overflow the base pointer, making the total exploit length 40 bytes before winwin() is called.
+
+Before we craft a exploit, we need to eliminate bad characters.
+
 ### 3. Eliminating Bad Characters
 ### 4. Building a Exploit
 ### 5. Successful Exploitation
