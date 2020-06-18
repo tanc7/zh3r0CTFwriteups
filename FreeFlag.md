@@ -68,7 +68,7 @@ __I strongly advise watching this short eleven-and-a-half minute video of how to
 
 When you are done. Run `ghidra` on the command line
 
-![](ghidrasplash)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_ghidra_splash.png)
 
 Playing around with GHIDRA, you might notice three functions.
 1. main()
@@ -77,24 +77,28 @@ Playing around with GHIDRA, you might notice three functions.
 
 main() directly calls here(), and here() merely accepts your buffer to overflow. Winwin() however cannot be called, but what is interesting is if you search for the function in GHIDRA, the address is 0x400707.
 
-![](winwin_function)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_ghidra_winwin_func.png)
 
 In other words, the objective is to overflow the RBP (Return Base Pointer), with that address for winwin() AKA 0x400707, to make the exploited app run the command `cat flag.txt`, thereby printing your flag.
 
-Install gdb-PEDA if you have not already.
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_ghidra_memloc_syscall_winwin.png)
+
+Install gdb-PEDA if you have not already. https://github.com/longld/peda
 
 First let's create a payload to see if we can crash the program. `python -c 'print "A"*100' > payload.txt`
 Now have gdb run a debugger session, first make the app executable, `chmod 700 freeflag`, and then run gdb with the peda plugin installed, `gdb freeflag`
 
 In the prompt, crash the program with 100 letter A's, `run < payload.txt`, and let's analyze the crash.
 
-![](firstcrash)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_Fuzzing_Crash.png)
 
-As you can see, there are a few interesting things going on here. Note that the Return Instruction Pointer remains unharmed and not overwritten. This is bad news. But also note that we completely overwrote the Return Base Pointer with eight capital A's. That is promising, because the base pointer controls when the program returns back to the Return Stack Pointer when execution hits it.
+As you can see, there are a few interesting things going on here. Note that the Return Instruction Pointer remains unharmed and not overwritten. This is bad news. But also note that we completely overwrote the Return Base Pointer with eight capital A's. That is promising, because the base pointer controls when the program returns back to the Return Stack Pointer when execution hits it. __Note that this will be very useful in the spawning of the reverse shell which is at the end of this write-up, since it's not relevant to our current objective, legitimately printing the flag__
 
 Also, please count the length of the buffer that landed between the registers. As you'll find out later, the buffer of A's began in the RSI register, but it is NOT 100 bytes long. Each row is 16 bytes, with the fourth row being occupied by eight bytes of A's. So 3x16+8 = 56 bytes.
 
 Take note of this. We only have 56 bytes to play with.
+
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_56_bytes_to_play_with.png)
 
 ### 2. Assessing Exploit Opportunities
 
@@ -107,17 +111,23 @@ pattern create 100
 
 Then copy and paste the pattern after typing `run`, right into the console and watch the crash.
 
-![](secondcrash)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_Begin_MapBuffer.png)
 
 In gdb-PEDA, you can specifically search for the offset, that is the distance from a desired section of the buffer and the amount of "junk" letter A's needed to reach it, by specifically typing `pattern search $register`. However, a more convenient way is to dump all the offsets that we need, just run __`pattern search`__ and copy and paste the output into a file called exploit.py
 
-![](Register_offsets)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_RBP_offset.png)
 
-As you can see from the register offsets, it takes a buffer of 32 A's to reach the RBP register. By which point, the following eight bytes of our cherry-picked winwin() memory address will overflow the base pointer, making the total exploit length 40 bytes before winwin() is called.
+__The highlighted section is only relevant to our reverse shell exploit, pay attention to the Return Stack Pointer (RSP) Register for the legitimate write-up__
+
+To reach the RSP register, we need 40 bytes of A's to reach it, starting from it's entry point in the RSI register. 
 
 Before we craft a exploit, we need to eliminate bad characters.
 
 ### 3. Eliminating Bad Characters
+
+__Note: The legitimate flag grabbing exploit works fine with a buffer of capital A's. But Eliminating bad characters is important for the reverse shell section of the write-up__
+
+
 ### 4. Building a Exploit
 ### 5. Successful Exploitation (local)
 
@@ -162,13 +172,13 @@ f.close
 ```
 To test this, I used the `echo '{youdidit}' > flag.txt` command in the same directory as the binary that was given to me. As you can see, if you generate the payload and then `gdb freeflag` and then `run < payload.txt`, which spawns a process that runs the `cat flag.txt` command to print the flag.
 
-![](successful_exploit)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_successful_local_exploit.png)
 
 ### 6. Unsuccessful Exploitation (Remote)
 
 Unfortunately, online exploitation was not a success. I was told on the ctf.zh3r0.ml Discord channel that the issue is the discrepancies between different versions of libc and that the stack must be realigned for successful exploitation.
 
-![](unsuccessful_exploitation)
+![](https://raw.githubusercontent.com/tanc7/zh3r0CTFwriteups/master/images/1_unsuccessful_remote_exploit.png)
 
 If you can do it, the CTFd servers are still online as of this day. Here is the code, although the server returns 'None' as in no response. As I do not know of what version of libc they are using, all I know is that it is some sort of Docker container that may have C Socket listeners pre-compiled.
 
@@ -223,3 +233,5 @@ print conn.recvuntil(b' ',drop=True)
 conn.close()
 ```
 # Bonus: My big mistake. Accidentally creating a reverse shell instead without controlling the instruction pointer.
+
+As you can see from the register offsets, it takes a buffer of 32 A's to reach the RBP register. By which point, the following eight bytes of our cherry-picked winwin() memory address will overflow the base pointer, making the total exploit length 40 bytes before winwin() is called.
