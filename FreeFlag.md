@@ -111,7 +111,7 @@ Then copy and paste the pattern after typing `run`, right into the console and w
 
 In gdb-PEDA, you can specifically search for the offset, that is the distance from a desired section of the buffer and the amount of "junk" letter A's needed to reach it, by specifically typing `pattern search $register`. However, a more convenient way is to dump all the offsets that we need, just run __`pattern search`__ and copy and paste the output into a file called exploit.py
 
-![](Register offsets)
+![](Register_offsets)
 
 As you can see from the register offsets, it takes a buffer of 32 A's to reach the RBP register. By which point, the following eight bytes of our cherry-picked winwin() memory address will overflow the base pointer, making the total exploit length 40 bytes before winwin() is called.
 
