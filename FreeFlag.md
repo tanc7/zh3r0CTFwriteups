@@ -9,7 +9,7 @@ ctanlister@gmail.com
 
 The author has made the mistake of wasting his time attempting to spawn a reverse shell (which worked locally), until he realized he only called to call the function pointer to print the flag after he identified the pointer location in GHIDRA.
 
-## However: I did manage to spawn a reverse shell with a limited buffer space of 32 bytes WITHOUT control of the Return Instruction Pointer
+## However: I did manage to spawn a reverse shell with a limited buffer space of 32 bytes WITHOUT control of the Return Instruction Pointer, see bottom of write-up
 
 I called it the __inertia-less trampoline technique__.
 
